@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Whole-Piece Training for Symbolic Music Language Models via Full-Horizon Compressed Recurrence (FHCR)." />
+  <title>Whole-Piece Training via FHCR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="hero">
+    <div class="container">
+      <div class="eyebrow">Symbolic Music · Long-Context Modeling</div>
+      <h1>Whole-Piece Training for Symbolic Music Language Models via Full-Horizon Compressed Recurrence</h1>
+      <p class="tagline">Preserve the horizon. Compress the representation.</p>
+      <div class="authors">
+        <span>Anonymous</span><span>Anonymous</span><span>Anonymous</span><span>Anonymous</span><span>Anonymous</span>
+      </div>
+      <p class="affiliations">Anonymous Affiliation</p>
+      <div class="button-row">
+        <a class="button primary" href="#">Paper</a>
+        <a class="button" href="#">arXiv</a>
+        <a class="button" href="#">Code</a>
+        <a class="button" href="#music">Music Samples</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="container narrow">
+        <div class="claim-card">
+          <div class="claim-title">Core finding</div>
+          <p>
+            Competitive perplexity does not necessarily imply functional use of distant musical context.
+            Temporal memory pruning can preserve aggregate prediction quality while substantially weakening
+            long-range dependence. FHCR instead preserves the full recurrent horizon and reduces the cost of
+            representing that history.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container">
+        <h2>Overview</h2>
+        <div class="three-col">
+          <article class="card">
+            <div class="card-kicker">Whole-piece training</div>
+            <h3>Keep each composition continuous</h3>
+            <p>Complete musical works remain continuous training sequences while computation is streamed through shorter
+              recurrent segments.</p>
+          </article>
+          <article class="card">
+            <div class="card-kicker">KRCU</div>
+            <h3>Measure functional long-range dependence</h3>
+            <p>KV-Reset Context Utilization evaluates how future-token likelihood changes after recurrent KV state is
+              reset at a controlled boundary.</p>
+          </article>
+          <article class="card">
+            <div class="card-kicker">FHCR</div>
+            <h3>Compress representation, not time</h3>
+            <p>Full-Horizon Compressed Recurrence preserves all recurrent positions while reducing KV representation
+              cost using grouped-query attention.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section alt">
+      <div class="container">
+        <h2>KRCU reveals what perplexity misses</h2>
+        <p class="lead">After an 8k-token KV reset, full-horizon models retain a persistent prediction penalty, whereas
+          many temporal-pruning models recover rapidly.</p>
+        <div class="figure-block">
+          <img src="assets/figures/kv_reset_plot_delta_all.png" alt="KRCU recovery trajectories" />
+        </div>
+        <div class="metrics-grid">
+          <div class="metric">
+            <div class="metric-name">Full-horizon MHA</div>
+            <div class="metric-value">0.0277</div>
+            <div class="metric-label">KRCU-AUC</div>
+          </div>
+          <div class="metric">
+            <div class="metric-name">Two-scale pruning</div>
+            <div class="metric-value">0.0090</div>
+            <div class="metric-label">KRCU-AUC</div>
+          </div>
+          <div class="metric accent">
+            <div class="metric-name">FHCR</div>
+            <div class="metric-value">0.0303</div>
+            <div class="metric-label">KRCU-AUC</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <h2>FHCR Preserves Context and Perplexity While Saving Memory</h2>
+        <div class="figure-block">
+          <img src="assets/figures/ppl_krcu_memory_all_models.png" alt="PPL KRCU memory comparison" />
+        </div>
+        <div class="stats">
+          <div><strong>6.11 → 6.17</strong><span>Validation PPL<br />MHA → FHCR</span></div>
+          <div><strong>15.5 → 5.5 GB</strong><span>Peak GPU memory<br />64.5% reduction</span></div>
+          <div><strong>7,618 → 8,982</strong><span>Training throughput<br />tokens/s</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="music" class="section alt">
+      <div class="container">
+        <h2>Generated music samples</h2>
+        <div class="audio-grid">
+          <article class="audio-card">
+            <h3>Sample 1</h3><audio controls preload="none">
+              <source src="assets/audio/sample_01.mp3" type="audio/mpeg" />
+            </audio>
+          </article>
+          <article class="audio-card">
+            <h3>Sample 2</h3><audio controls preload="none">
+              <source src="assets/audio/sample_02.mp3" type="audio/mpeg" />
+            </audio>
+          </article>
+          <article class="audio-card">
+            <h3>Sample 3</h3><audio controls preload="none">
+              <source src="assets/audio/sample_03.mp3" type="audio/mpeg" />
+            </audio>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container narrow">
+        <h2>Abstract</h2>
+        <p>For computational efficiency, modern language models are typically trained on independently sampled
+          fixed-length sequences. Symbolic music language models largely inherit this paradigm, despite musical
+          structure naturally unfolding over complete compositions rather than isolated excerpts. Fragmenting
+          compositions into independent training instances therefore prevents continuous conditioning over the complete
+          work.</p>
+        <p>We present a practical framework for whole-piece training of symbolic music language models via Full-Horizon
+          Compressed Recurrence (FHCR). FHCR preserves the full temporal horizon of recurrent memory while reducing its
+          representation cost along the key-value representation dimension, making continuous whole-piece training
+          practical under limited GPU memory.</p>
+        <p>To directly assess functional long-range dependence, we introduce KV-Reset Context Utilization (KRCU), an
+          evaluation-time diagnostic. On the MAESTRO symbolic piano dataset, KRCU shows that full-horizon models utilize
+          context far beyond the local segment window, whereas reducing the temporal extent of recurrent memory
+          substantially weakens this measurable long-range dependence. FHCR preserves long-range context utilization
+          while substantially reducing recurrent memory cost.</p>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="container narrow">
+        <h2>Citation</h2>
+        <pre class="citation"><code>@article{anonymous2026wholepiece,
+  title   = {Whole-Piece Training for Symbolic Music Language Models via Full-Horizon Compressed Recurrence},
+  author  = {Anonymous and Anonymous and Anonymous and Anonymous and Anonymous},
+  year    = {2026}
+}</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 WholeMusic · Project page for FHCR</p>
+    </div>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(audio => {
+        audio.addEventListener('play', () => {
+          audios.forEach(otherAudio => {
+            if (otherAudio !== audio) {
+              otherAudio.pause();
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
